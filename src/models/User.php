@@ -3,31 +3,33 @@
 namespace app\models;
 
 use blink\auth\Authenticatable;
-use blink\core\Object;
 
-class User extends Object implements Authenticatable
+use blink\core\Object;
+use blink\core\InvalidParamException;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Hashing\BcryptHasher as Hash;
+
+class User extends Model implements Authenticatable
 {
-  /**
-  * @inheritDoc
-  */
   public static function findIdentity($id)
   {
-    // TODO: Implement findIdentity() method.
+    if (is_numeric($id) || (is_array($id) && isset($id['id']))) {
+      return static::where('id', $id)->first();
+    } else if (is_string($id) || (is_array($id) && isset($id['email'])) ) {
+      return static::where('email', $id)->first();
+    } else {
+      throw new InvalidParamException("The param :id is invalid.");
+    }
   }
 
-  /**
-  * @inheritDoc
-  */
   public function getAuthId()
   {
-    // TODO: Implement getAuthId() method.
+    return $this->id;
   }
 
-  /**
-  * @inheritDoc
-  */
   public function validatePassword($password)
   {
-    // TODO: Implement validatePassword() method.
+    return (new Hash)->check($password, $this->password);
   }
 }

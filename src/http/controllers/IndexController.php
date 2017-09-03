@@ -6,8 +6,8 @@ use blink\core\Object;
 
 class IndexController extends Object
 {
-    public function sayHello()
-    {
-        return 'Hello world, Blink.';
-    }
+  public function sayHello()
+  {
+    return 'Hello world, Blink.';
+  }
 }
